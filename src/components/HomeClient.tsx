@@ -1,11 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { PetProfile, SAMPLE_PETS } from "@/data/pets";
-import { SITE_CONFIG, buildWhatsAppUrl } from "@/config/site";
+import {
+  ADOPTION_PROCESS_STEPS,
+  SAMPLE_SUCCESS_STORIES,
+  WHY_ADOPT_ITEMS,
+} from "@/data/content";
+import { SITE_CONFIG } from "@/config/site";
 import Header from "./Header";
 import Footer from "./Footer";
+import PetCard from "./PetCard";
 import PetModal from "./PetModal";
+import MobileFloatWhatsApp from "./MobileFloatWhatsApp";
 
 type FilterCategory = "all" | "dog" | "cat";
 
@@ -21,10 +29,6 @@ export default function HomeClient() {
   const dogCount = SAMPLE_PETS.filter((p) => p.species === "dog").length;
   const catCount = SAMPLE_PETS.filter((p) => p.species === "cat").length;
 
-  const mobileFloatWaUrl = buildWhatsAppUrl(
-    `Hi ${SITE_CONFIG.brandName} team, I'm interested in adopting a pet!`
-  );
-
   return (
     <div id="top">
       <Header />
@@ -38,7 +42,7 @@ export default function HomeClient() {
               <div className="hero-badge-pill">✅ Vaccinated &amp; Dewormed</div>
             </div>
             <h2>
-              Every rescue deserves a <em>loving forever home.</em>
+              Give a pet a <em>forever home.</em>
             </h2>
             <p>
               Meet our adorable rescue puppies and kittens nurtured on open,
@@ -46,12 +50,12 @@ export default function HomeClient() {
               chat with our care team on WhatsApp, and schedule a play visit.
             </p>
             <div className="hero-cta-group">
-              <a href="#catalog" className="btn-primary">
+              <Link href="/adopt" className="btn-primary">
                 <span>🐾</span> Explore Pets Available Now
-              </a>
-              <a href="#how-it-works" className="btn-secondary">
+              </Link>
+              <Link href="/process" className="btn-secondary">
                 How Adoption Works
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -65,7 +69,7 @@ export default function HomeClient() {
               />
               <div className="hero-floating-tag">
                 <div>
-                  <strong>The Rajanukunte Five</strong>
+                  <strong>Recently Added: The Rajanukunte Five</strong>
                   <span>Rescued sibling pups looking for homes</span>
                 </div>
                 <div
@@ -83,16 +87,15 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* Catalog Section */}
+      {/* Featured & Recently Added Pets Catalog */}
       <section className="catalog-section" id="catalog">
         <div className="container">
           <div className="section-header">
             <div className="section-title">
-              <span>Adoptable Companions</span>
+              <span>Featured &amp; Recently Added</span>
               <h3>Meet Your Future Best Friend</h3>
             </div>
 
-            {/* Filter Bar */}
             <div
               className="filter-bar"
               role="tablist"
@@ -128,142 +131,166 @@ export default function HomeClient() {
             </div>
           </div>
 
-          {/* Pet Cards Grid */}
           <div className="pet-grid" id="petGrid">
             {visiblePets.map((pet) => (
-              <div className="pet-card" key={pet.id} data-species={pet.species}>
-                <div className="pet-image-wrap">
-                  <span className="badge-status">
-                    <span className="status-dot" /> Available
-                  </span>
-                  <span
-                    className={`badge-species${
-                      pet.species === "cat" ? " cat" : ""
-                    }`}
-                  >
-                    {pet.badgeLabel}
-                  </span>
-                  <img
-                    src={pet.image}
-                    alt={pet.alt}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <div className="pet-card-body">
-                  <div className="pet-header">
-                    <h4 className="pet-name">{pet.name}</h4>
-                    <span className="pet-age">{pet.age}</span>
-                  </div>
-                  <p className="pet-breed">
-                    {pet.breed} • {pet.gender} • {pet.color}
-                  </p>
-                  <div className="pet-tags">
-                    {pet.tags.map((tag) => (
-                      <span className="pet-tag" key={tag}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="pet-card-footer">
-                    <a
-                      href={buildWhatsAppUrl(pet.whatsappMessage)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-card-wa"
-                    >
-                      <span>💬</span> WhatsApp
-                    </a>
-                    <button
-                      type="button"
-                      className="btn-card-view"
-                      onClick={() => setSelectedPet(pet)}
-                    >
-                      Profile
-                    </button>
-                  </div>
-                </div>
+              <PetCard
+                key={pet.id}
+                pet={pet}
+                onViewProfile={(chosen) => setSelectedPet(chosen)}
+              />
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "36px" }}>
+            <Link href="/adopt" className="btn-secondary">
+              Browse Full Adoption Directory →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Adopt Instead of Buying */}
+      <section
+        className="why-section"
+        style={{
+          background: "var(--bg-subtle)",
+          borderTop: "1px solid var(--border-soft)",
+          borderBottom: "1px solid var(--border-soft)",
+        }}
+      >
+        <div className="container">
+          <div className="process-header" style={{ marginBottom: "20px" }}>
+            <span className="process-eyebrow">Make a Real Difference</span>
+            <h3>Why Adopt Instead of Buying?</h3>
+            <p>
+              Choosing adoption means welcoming a companion who truly needs a
+              family—with honest handler insights and full vet transparency.
+            </p>
+          </div>
+
+          <div className="why-grid">
+            {WHY_ADOPT_ITEMS.map((item) => (
+              <div className="why-card" key={item.title}>
+                <div className="why-icon">{item.icon}</div>
+                <h4>{item.title}</h4>
+                <p>{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="process-section" id="how-it-works">
+      {/* How Adoption Works Preview */}
+      <section className="process-section" id="how-it-works" style={{ background: "var(--bg-canvas)", border: "none" }}>
         <div className="container">
           <div className="process-header">
-            <span className="process-eyebrow">Smooth &amp; Caring</span>
-            <h3>Our Adoption Journey</h3>
+            <span className="process-eyebrow">Transparent &amp; Guided</span>
+            <h3>How Adoption Works</h3>
             <p>
-              We ensure our animals and adoptive families are a joyful, lifelong
-              match through a friendly, guided process.
+              We follow a thoughtful 7-step journey so every animal and family
+              begins together with confidence.
             </p>
           </div>
 
           <div className="process-grid">
-            <div className="process-card">
-              <div className="process-step-num">01</div>
-              <h4>Find Your Match</h4>
-              <p>
-                Browse our verified profiles. Pick the puppy or kitten whose
-                energy and temperament fits your home lifestyle.
-              </p>
-            </div>
+            {ADOPTION_PROCESS_STEPS.slice(0, 4).map((item) => (
+              <div className="process-card" key={item.step}>
+                <div className="process-step-num">{item.step}</div>
+                <h4>{item.title}</h4>
+                <p>{item.summary}</p>
+              </div>
+            ))}
+          </div>
 
-            <div className="process-card">
-              <div className="process-step-num">02</div>
-              <h4>WhatsApp Chat</h4>
-              <p>
-                Click the WhatsApp button on your chosen pet. Our caretakers
-                will answer questions and share recent video clips.
-              </p>
-            </div>
-
-            <div className="process-card">
-              <div className="process-step-num">03</div>
-              <h4>Meet &amp; Greet Visit</h4>
-              <p>
-                Visit our open green facility near Rajanukunte. Spend time
-                playing and bonding with the pet in person.
-              </p>
-            </div>
-
-            <div className="process-card">
-              <div className="process-step-num">04</div>
-              <h4>Welcome Home</h4>
-              <p>
-                Complete simple paperwork, receive their vaccination record, and
-                take home your new family member!
-              </p>
-            </div>
+          <div style={{ textAlign: "center", marginTop: "32px" }}>
+            <Link href="/process" className="btn-secondary">
+              See Full 7-Step Adoption Process →
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Sanctuary & Care Banner */}
+      {/* Recently Adopted Success Stories */}
+      <section
+        className="stories-section"
+        style={{
+          background: "var(--bg-subtle)",
+          borderTop: "1px solid var(--border-soft)",
+          borderBottom: "1px solid var(--border-soft)",
+        }}
+      >
+        <div className="container">
+          <div className="section-header">
+            <div className="section-title">
+              <span>Happy Tails</span>
+              <h3>Recently Adopted Success Stories</h3>
+            </div>
+            <Link href="/success-stories" className="btn-secondary">
+              View All Stories →
+            </Link>
+          </div>
+
+          <div className="stories-grid">
+            {SAMPLE_SUCCESS_STORIES.map((story) => (
+              <article className="story-card" key={story.id}>
+                <div className="story-img-wrap">
+                  <span className="story-badge">Adopted • {story.adoptedDate}</span>
+                  <img
+                    src={story.image}
+                    alt={`${story.petName} with ${story.adopterNames}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div className="story-body">
+                  <h4>{story.petName}</h4>
+                  <div className="story-meta">
+                    Adopted by {story.adopterNames} • {story.neighborhood}
+                  </div>
+                  <div className="story-before">{story.beforeNote}</div>
+                  <p className="story-quote">&ldquo;{story.afterQuote}&rdquo;</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Adoption Enquiry Banner */}
       <section className="facility-banner" id="facility">
         <div className="container">
           <div className="facility-card">
             <div>
-              <span className="facility-eyebrow">Nurtured with Love</span>
-              <h3>Raised on Open Green Grounds</h3>
+              <span className="facility-eyebrow">Questions Before Adopting?</span>
+              <h3>We&apos;re Here to Help You Find the Right Match</h3>
               <p>
-                Unlike crowded city shelters, our rescue animals live on
-                spacious outdoor lawns in North Bangalore. They get daily
-                playtime, supervised socialisation, and veterinary care before
-                meeting their new families.
+                Not sure whether a young puppy or an independent cat fits your
+                routine? Reach out to our handlers or explore our FAQs to get
+                honest guidance before visiting.
               </p>
-              <a
-                href="#catalog"
-                className="btn-primary"
-                style={{
-                  background: "#FFFFFF",
-                  color: "var(--brand-forest)",
-                }}
-              >
-                Browse Available Rescues →
-              </a>
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                <Link
+                  href="/contact"
+                  className="btn-primary"
+                  style={{
+                    background: "#FFFFFF",
+                    color: "var(--brand-forest)",
+                  }}
+                >
+                  Send Adoption Enquiry →
+                </Link>
+                <Link
+                  href="/faqs"
+                  className="btn-secondary"
+                  style={{
+                    background: "transparent",
+                    color: "#FFFFFF",
+                    borderColor: "rgba(255,255,255,0.35)",
+                  }}
+                >
+                  Read FAQs
+                </Link>
+              </div>
             </div>
 
             <div className="facility-perks">
@@ -297,17 +324,7 @@ export default function HomeClient() {
       </section>
 
       <Footer />
-
-      {/* Floating Mobile WhatsApp Button */}
-      <a
-        href={mobileFloatWaUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mobile-float-wa"
-      >
-        <span>💬</span> Adopt via WhatsApp
-      </a>
-
+      <MobileFloatWhatsApp />
       <PetModal pet={selectedPet} onClose={() => setSelectedPet(null)} />
     </div>
   );

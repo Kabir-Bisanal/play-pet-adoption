@@ -1,15 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SITE_CONFIG, buildWhatsAppUrl } from "@/config/site";
 
+const NAV_ITEMS = [
+  { href: "/", label: "Home" },
+  { href: "/adopt", label: "Adopt a Pet" },
+  { href: "/process", label: "Process" },
+  { href: "/success-stories", label: "Success Stories" },
+  { href: "/about", label: "About" },
+  { href: "/faqs", label: "FAQs" },
+  { href: "/contact", label: "Contact" },
+];
+
 export default function Header() {
+  const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
 
     const handleScroll = () => {
+      if (menuOpen) return;
+
       const currentScrollY =
         window.pageYOffset || document.documentElement.scrollTop;
 
@@ -29,7 +45,12 @@ export default function Header() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [menuOpen]);
+
+  // Close mobile drawer when route changes
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const headerWaUrl = buildWhatsAppUrl(
     `Hi ${SITE_CONFIG.brandName} team, I'm looking to adopt a pet!`
@@ -42,32 +63,30 @@ export default function Header() {
     >
       <div className="top-bar">
         🐾 We currently have 25+ rescue dogs &amp; cats ready for forever homes
-        in North Bangalore. <a href="#catalog">View Adoptable Pets</a>
+        in North Bangalore. <Link href="/adopt">View Adoptable Pets</Link>
       </div>
 
       <div className="nav-bar">
         <div className="container nav-inner">
-          <a href="#top" className="logo-block">
+          <Link href="/" className="logo-block">
             <div className="logo-badge">🐾</div>
             <div className="logo-text">
               <h1>{SITE_CONFIG.brandName}</h1>
               <span>{SITE_CONFIG.brandTagline}</span>
             </div>
-          </a>
+          </Link>
 
           <ul className="nav-links">
-            <li>
-              <a href="#catalog">Adopt a Pet</a>
-            </li>
-            <li>
-              <a href="#how-it-works">Adoption Process</a>
-            </li>
-            <li>
-              <a href="#facility">Our Care</a>
-            </li>
-            <li>
-              <a href="#contact">Contact</a>
-            </li>
+            {NAV_ITEMS.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={pathname === item.href ? "active" : ""}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <div className="nav-cta">
@@ -79,8 +98,33 @@ export default function Header() {
             >
               <span>💬</span> Chat to Adopt
             </a>
+
+            <button
+              type="button"
+              className="mobile-menu-btn"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? "✕" : "☰"}
+            </button>
           </div>
         </div>
+
+        {menuOpen && (
+          <nav className="mobile-drawer" aria-label="Mobile navigation">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={pathname === item.href ? "active" : ""}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        )}
       </div>
     </header>
   );

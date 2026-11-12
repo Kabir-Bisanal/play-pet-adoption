@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SITE_CONFIG, buildWhatsAppUrl } from "@/config/site";
 
 export default function Footer() {
@@ -6,7 +7,7 @@ export default function Footer() {
   );
 
   return (
-    <footer id="contact">
+    <footer>
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
@@ -40,31 +41,34 @@ export default function Footer() {
             <h5>Adopt</h5>
             <ul>
               <li>
-                <a href="#catalog">Puppies &amp; Dogs</a>
+                <Link href="/adopt">All Adoptable Pets</Link>
               </li>
               <li>
-                <a href="#catalog">Cats &amp; Kittens</a>
+                <Link href="/adopt?species=dog">Puppies &amp; Dogs</Link>
               </li>
               <li>
-                <a href="#how-it-works">Adoption Steps</a>
+                <Link href="/adopt?species=cat">Cats &amp; Kittens</Link>
               </li>
               <li>
-                <a href="#catalog">Sibling Pairs</a>
+                <Link href="/success-stories">Success Stories</Link>
               </li>
             </ul>
           </div>
 
           <div className="footer-col">
-            <h5>Care &amp; Support</h5>
+            <h5>Learn More</h5>
             <ul>
               <li>
-                <a href="#facility">Our Sanctuary Grounds</a>
+                <Link href="/process">7-Step Adoption Process</Link>
               </li>
               <li>
-                <a href="#how-it-works">Meet &amp; Greet Process</a>
+                <Link href="/about">About Us</Link>
               </li>
               <li>
-                <a href="#catalog">Available Rescues</a>
+                <Link href="/faqs">FAQs</Link>
+              </li>
+              <li>
+                <Link href="/contact">Contact Us</Link>
               </li>
             </ul>
           </div>
