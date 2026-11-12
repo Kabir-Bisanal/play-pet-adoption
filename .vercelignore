@@ -1,6 +1,8 @@
 docs/
 prototype/
 assets/
+tests/
+.agents/
 README.md
 node_modules/
 .next/

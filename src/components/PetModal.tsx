@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { PetProfile } from "@/data/pets";
 import { buildWhatsAppUrl } from "@/config/site";
 
@@ -27,6 +28,13 @@ export default function PetModal({ pet, onClose }: PetModalProps) {
   }, [pet, onClose]);
 
   if (!pet) return null;
+
+  const speciesLabel =
+    pet.species === "dog"
+      ? "Dog"
+      : pet.species === "cat"
+      ? "Cat"
+      : pet.badgeLabel || "Other Animal";
 
   return (
     <div
@@ -68,8 +76,7 @@ export default function PetModal({ pet, onClose }: PetModalProps) {
               </span>
             </h3>
             <p className="meta">
-              {pet.species === "dog" ? "Dog" : "Cat"} • {pet.breed} • {pet.age}{" "}
-              ({pet.gender})
+              {speciesLabel} • {pet.breed} • {pet.age} ({pet.gender})
             </p>
 
             <ul className="checklist">
@@ -98,6 +105,14 @@ export default function PetModal({ pet, onClose }: PetModalProps) {
             <div className="modal-story">{pet.story}</div>
 
             <div className="modal-actions">
+              <Link
+                href={`/adopt/${pet.id}`}
+                onClick={onClose}
+                className="btn-secondary"
+                style={{ justifyContent: "center", textAlign: "center" }}
+              >
+                View Full Profile Page →
+              </Link>
               <a
                 href={buildWhatsAppUrl(pet.whatsappMessage)}
                 target="_blank"

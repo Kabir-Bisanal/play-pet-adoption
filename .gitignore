@@ -3,11 +3,15 @@
 /.pnp
 .pnp.*
 
-# Next.js
+# Next.js & TypeScript
 /.next/
 /out/
 /build
 next-env.d.ts
+*.tsbuildinfo
+
+# Internal agent workspaces
+.agents/
 
 # Environment variables (Never commit secrets!)
 .env

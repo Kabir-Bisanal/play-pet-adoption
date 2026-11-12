@@ -1,28 +1,45 @@
 "use client";
 
+import Link from "next/link";
 import { PetProfile } from "@/data/pets";
 import { buildWhatsAppUrl } from "@/config/site";
 
 interface PetCardProps {
   pet: PetProfile;
-  onViewProfile: (pet: PetProfile) => void;
+  onViewProfile?: (pet: PetProfile) => void;
 }
 
 export default function PetCard({ pet, onViewProfile }: PetCardProps) {
+  const speciesClass =
+    pet.species === "cat"
+      ? "badge-species cat"
+      : pet.species === "other"
+      ? "badge-species other"
+      : "badge-species";
+
   return (
     <div className="pet-card" data-species={pet.species}>
-      <div className="pet-image-wrap">
+      <div
+        className="pet-image-wrap"
+        onClick={() => onViewProfile?.(pet)}
+        style={{ cursor: onViewProfile ? "pointer" : "default" }}
+      >
         <span className="badge-status">
           <span className="status-dot" /> Available
         </span>
-        <span className={`badge-species${pet.species === "cat" ? " cat" : ""}`}>
+        <span className={speciesClass}>
           {pet.badgeLabel}
         </span>
         <img src={pet.image} alt={pet.alt} loading="lazy" decoding="async" />
       </div>
       <div className="pet-card-body">
         <div className="pet-header">
-          <h4 className="pet-name">{pet.name}</h4>
+          <div className="pet-header-left">
+            <h4 className="pet-name">
+              <Link href={`/adopt/${pet.id}`}>{pet.name}</Link>
+            </h4>
+            <span className="pet-card-id">{pet.adoptionCode}</span>
+          </div>
           <span className="pet-age">{pet.age}</span>
         </div>
         <p className="pet-breed">
@@ -44,13 +61,9 @@ export default function PetCard({ pet, onViewProfile }: PetCardProps) {
           >
             <span>💬</span> WhatsApp
           </a>
-          <button
-            type="button"
-            className="btn-card-view"
-            onClick={() => onViewProfile(pet)}
-          >
+          <Link href={`/adopt/${pet.id}`} className="btn-card-view">
             Profile
-          </button>
+          </Link>
         </div>
       </div>
     </div>
