@@ -4,4 +4,5 @@ assets/
 README.md
 .git/
 .gitignore
-.nojekyll
+node_modules/
+.next/

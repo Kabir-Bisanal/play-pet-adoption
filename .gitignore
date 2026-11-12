@@ -1,11 +1,25 @@
-# Operating System Files
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js
+/.next/
+/out/
+/build
+next-env.d.ts
+
+# Environment variables (Never commit secrets!)
+.env
+.env*.local
+
+# Operating System & Editor files
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# Editor & Temp files
 *.swp
 *.tmp
 *~
 .vscode/
 .idea/
+.vercel
