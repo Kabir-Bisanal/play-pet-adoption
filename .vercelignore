@@ -1,0 +1,7 @@
+docs/
+prototype/
+assets/
+README.md
+.git/
+.gitignore
+.nojekyll
