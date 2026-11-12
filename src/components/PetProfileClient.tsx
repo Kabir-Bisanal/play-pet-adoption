@@ -62,6 +62,30 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
     `Hi ${SITE_CONFIG.brandName} team, I fell in love with ${pet.name} (${pet.adoptionCode}) on your adoption website! Can we schedule a visit to meet?`;
   const whatsAppInquiryUrl = buildWhatsAppUrl(inquiryMessage);
 
+  const quickStepsCard = (extraClass: string) => (
+    <div className={`profile-quick-steps ${extraClass}`}>
+      <h4 className="quick-steps-title">🐾 Haven Paws Adoption Journey</h4>
+      <ol className="quick-steps-list">
+        <li>
+          <strong>1. WhatsApp Chat:</strong> Send inquiry with code{" "}
+          {pet.adoptionCode}
+        </li>
+        <li>
+          <strong>2. Consultation:</strong> Discuss lifestyle, home environment
+          &amp; safety
+        </li>
+        <li>
+          <strong>3. Meet &amp; Greet:</strong> Interactive play session at our
+          Bangalore facility
+        </li>
+        <li>
+          <strong>4. Welcome Home:</strong> Formal adoption pledge &amp;
+          post-adoption support
+        </li>
+      </ol>
+    </div>
+  );
+
   return (
     <div className="pet-profile-client">
       <div className="profile-grid">
@@ -160,24 +184,8 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
               </div>
             )}
 
-            {/* Quick Adoption Process Banner */}
-            <div className="profile-quick-steps">
-              <h4 className="quick-steps-title">🐾 Haven Paws Adoption Journey</h4>
-              <ol className="quick-steps-list">
-                <li>
-                  <strong>1. WhatsApp Chat:</strong> Send inquiry with code {pet.adoptionCode}
-                </li>
-                <li>
-                  <strong>2. Consultation:</strong> Discuss lifestyle, home environment & safety
-                </li>
-                <li>
-                  <strong>3. Meet & Greet:</strong> Interactive play session at our Bangalore facility
-                </li>
-                <li>
-                  <strong>4. Welcome Home:</strong> Formal adoption pledge & post-adoption support
-                </li>
-              </ol>
-            </div>
+            {/* Quick Adoption Process Banner (Desktop left column) */}
+            {quickStepsCard("desktop-only-steps")}
           </div>
         </div>
 
@@ -375,6 +383,9 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
               Official Helpline: {SITE_CONFIG.displayPhone} • Shelter Location: {pet.location}
             </p>
           </div>
+
+          {/* Quick Adoption Process Banner (Mobile/Tablet after CTA) */}
+          {quickStepsCard("mobile-only-steps")}
         </div>
       </div>
     </div>
