@@ -2290,7 +2290,11 @@ footer {
   }
   .search-input {
     font-size: 16px; /* Prevents auto-zoom on iOS Safari */
-    padding: 12px 38px 12px 42px;
+    padding: 12px 36px 12px 40px;
+  }
+  .search-input::placeholder {
+    font-size: 0.88rem;
+    opacity: 0.75;
   }
   .filter-bar {
     padding: 4px;

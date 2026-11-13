@@ -218,7 +218,7 @@ export default function AdoptCatalogClient() {
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, breed, color, tag, or keywords..."
+            placeholder="Search by name, breed, or tag..."
             aria-label="Search adoptable pets"
           />
           {searchQuery.length > 0 && (
