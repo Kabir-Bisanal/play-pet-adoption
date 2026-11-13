@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SAMPLE_SUCCESS_STORIES } from "@/data/content";
 import { SITE_CONFIG } from "@/config/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileFloatWhatsApp from "@/components/MobileFloatWhatsApp";
+import { getSuccessStories } from "@/lib/pets";
 
 export const metadata: Metadata = {
   title: `Success Stories — ${SITE_CONFIG.brandName}`,
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
     "Happy endings and adopter stories from families across Bangalore who gave our rescues a forever home.",
 };
 
-export default function SuccessStoriesPage() {
+export default async function SuccessStoriesPage() {
+  const stories = await getSuccessStories();
+
   return (
     <div>
       <Header />
@@ -30,7 +32,7 @@ export default function SuccessStoriesPage() {
       <section className="page-section">
         <div className="container">
           <div className="stories-grid">
-            {SAMPLE_SUCCESS_STORIES.map((story) => (
+            {stories.map((story) => (
               <article className="story-card" key={story.id}>
                 <div className="story-img-wrap">
                   <span className="story-badge">

@@ -375,3 +375,20 @@ export const SAMPLE_PETS: PetProfile[] = [
     isSenior: false,
   },
 ];
+
+/**
+ * Normalizes input param and finds matching pet by ID slug or adoption code.
+ */
+export function getPetByIdOrCode(paramId: string): PetProfile | undefined {
+  if (!paramId) return undefined;
+  const decoded = decodeURIComponent(paramId).trim().toLowerCase();
+  const cleanCode = decoded.replace(/^#/, "");
+
+  return SAMPLE_PETS.find((pet) => {
+    const idMatch = pet.id.toLowerCase() === decoded;
+    const rawCodeMatch = pet.adoptionCode.toLowerCase() === decoded;
+    const cleanCodeMatch =
+      pet.adoptionCode.toLowerCase().replace(/^#/, "") === cleanCode;
+    return idMatch || rawCodeMatch || cleanCodeMatch;
+  });
+}

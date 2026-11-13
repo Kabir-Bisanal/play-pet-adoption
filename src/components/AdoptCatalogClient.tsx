@@ -119,7 +119,12 @@ export function matchesSearch(pet: PetProfile, query: string): boolean {
   return false;
 }
 
-export default function AdoptCatalogClient() {
+interface AdoptCatalogClientProps {
+  initialPets?: PetProfile[];
+}
+
+export default function AdoptCatalogClient({ initialPets }: AdoptCatalogClientProps = {}) {
+  const sourcePets = initialPets && initialPets.length > 0 ? initialPets : SAMPLE_PETS;
   const searchParams = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -162,7 +167,7 @@ export default function AdoptCatalogClient() {
 
   // Compute live facet counts scoped to search query
   const tabCounts = useMemo(() => {
-    const queryMatched = SAMPLE_PETS.filter((p) => matchesSearch(p, searchQuery));
+    const queryMatched = sourcePets.filter((p) => matchesSearch(p, searchQuery));
     return {
       all: queryMatched.length,
       dogs: queryMatched.filter((p) => matchesCategory(p, "dogs")).length,
@@ -173,15 +178,15 @@ export default function AdoptCatalogClient() {
       senior: queryMatched.filter((p) => matchesCategory(p, "senior")).length,
       other: queryMatched.filter((p) => matchesCategory(p, "other")).length,
     };
-  }, [searchQuery]);
+  }, [searchQuery, sourcePets]);
 
   // Visible filtered pets
   const visiblePets = useMemo(() => {
-    return SAMPLE_PETS.filter(
+    return sourcePets.filter(
       (pet) =>
         matchesCategory(pet, activeFilter) && matchesSearch(pet, searchQuery)
     );
-  }, [activeFilter, searchQuery]);
+  }, [activeFilter, searchQuery, sourcePets]);
 
   const handleResetFilters = () => {
     setSearchQuery("");

@@ -17,17 +17,25 @@ import MobileFloatWhatsApp from "./MobileFloatWhatsApp";
 
 type FilterCategory = "all" | "dog" | "cat";
 
-export default function HomeClient() {
+interface HomeClientProps {
+  initialPets?: PetProfile[];
+  initialStories?: typeof SAMPLE_SUCCESS_STORIES;
+}
+
+export default function HomeClient({ initialPets, initialStories }: HomeClientProps = {}) {
   const [filter, setFilter] = useState<FilterCategory>("all");
   const [selectedPet, setSelectedPet] = useState<PetProfile | null>(null);
 
+  const pets = initialPets && initialPets.length > 0 ? initialPets : SAMPLE_PETS;
+  const stories = initialStories && initialStories.length > 0 ? initialStories : SAMPLE_SUCCESS_STORIES;
+
   const visiblePets =
     filter === "all"
-      ? SAMPLE_PETS
-      : SAMPLE_PETS.filter((pet) => pet.species === filter);
+      ? pets
+      : pets.filter((pet) => pet.species === filter);
 
-  const dogCount = SAMPLE_PETS.filter((p) => p.species === "dog").length;
-  const catCount = SAMPLE_PETS.filter((p) => p.species === "cat").length;
+  const dogCount = pets.filter((p) => p.species === "dog").length;
+  const catCount = pets.filter((p) => p.species === "cat").length;
 
   return (
     <div id="top">
@@ -231,7 +239,7 @@ export default function HomeClient() {
           </div>
 
           <div className="stories-grid">
-            {SAMPLE_SUCCESS_STORIES.map((story) => (
+            {stories.map((story) => (
               <article className="story-card" key={story.id}>
                 <div className="story-img-wrap">
                   <span className="story-badge">Adopted • {story.adoptedDate}</span>

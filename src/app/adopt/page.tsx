@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileFloatWhatsApp from "@/components/MobileFloatWhatsApp";
 import AdoptCatalogClient from "@/components/AdoptCatalogClient";
+import { getPets } from "@/lib/pets";
 
 export const metadata: Metadata = {
   title: `Adopt a Pet — ${SITE_CONFIG.brandName}`,
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
     "Browse rescued dogs, puppies, cats, and kittens available for adoption in North Bangalore.",
 };
 
-export default function AdoptPage() {
+export default async function AdoptPage() {
+  const pets = await getPets();
+
   return (
     <div>
       <Header />
@@ -34,7 +37,7 @@ export default function AdoptPage() {
               <p style={{ color: "var(--text-muted)" }}>Loading pets...</p>
             }
           >
-            <AdoptCatalogClient />
+            <AdoptCatalogClient initialPets={pets} />
           </Suspense>
         </div>
       </section>

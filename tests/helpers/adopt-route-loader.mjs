@@ -15,6 +15,7 @@ export async function loadAdoptRouteModule(projectDir = process.cwd()) {
   code = code.replace(/function\s+getPetByIdOrCode\s*\(/g, "export function getPetByIdOrCode(");
 
   // Remap path aliases and Next.js internal imports for Node ESM runtime
+  code = code.replace(/import\s*\{\s*getPetById\s*\}\s*from\s*["']@\/lib\/pets["'];?/g, "const getPetById = async () => undefined;");
   code = code.replace(/from\s+["']@\/data\/pets["']/g, `from "${pathToFileURL(path.join(projectDir, "src", "data", "pets.ts")).href}"`);
   code = code.replace(/from\s+["']@\/config\/site["']/g, `from "${pathToFileURL(path.join(projectDir, "src", "config", "site.ts")).href}"`);
   code = code.replace(/from\s+["']next\/navigation["']/g, 'from "next/navigation.js"');

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SAMPLE_PETS, PetProfile } from "@/data/pets";
+import { getPetById } from "@/lib/pets";
 import { SITE_CONFIG } from "@/config/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -45,7 +46,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const pet = getPetByIdOrCode(id);
+  const pet = (await getPetById(id)) || getPetByIdOrCode(id);
 
   if (!pet) {
     return {
@@ -87,7 +88,7 @@ export async function generateMetadata({
  */
 export default async function PetProfilePage({ params }: PageProps) {
   const { id } = await params;
-  const pet = getPetByIdOrCode(id);
+  const pet = (await getPetById(id)) || getPetByIdOrCode(id);
 
   if (!pet) {
     notFound();
