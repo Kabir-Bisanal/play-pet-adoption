@@ -373,6 +373,7 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
               </a>
               <Link
                 href={`/apply?pet=${pet.id}`}
+                prefetch={true}
                 className="btn-apply-profile"
                 aria-label={`Apply to adopt ${pet.name} online`}
               >

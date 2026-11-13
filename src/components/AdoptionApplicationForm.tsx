@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { PetProfile } from "@/data/pets";
 import { buildWhatsAppUrl, SITE_CONFIG } from "@/config/site";
 import { submitAdoptionApplication, AdoptionFormState } from "@/app/actions/adoption";
@@ -46,7 +47,21 @@ export default function AdoptionApplicationForm({
   pets,
   initialPetSlug = "",
 }: AdoptionApplicationFormProps) {
-  const [selectedSlug, setSelectedSlug] = useState<string>(initialPetSlug);
+  const searchParams = useSearchParams();
+  const queryPet = searchParams ? (searchParams.get("pet") || searchParams.get("id") || "") : "";
+
+  const [selectedSlug, setSelectedSlug] = useState<string>(
+    initialPetSlug || queryPet
+  );
+
+  useEffect(() => {
+    if (!searchParams) return;
+    const q = searchParams.get("pet") || searchParams.get("id");
+    if (q) {
+      setSelectedSlug(q.toLowerCase().trim());
+    }
+  }, [searchParams]);
+
   const [state, formAction, isPending] = useActionState<AdoptionFormState, FormData>(
     submitAdoptionApplication,
     { success: false }

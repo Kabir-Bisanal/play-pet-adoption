@@ -14,12 +14,7 @@ export const metadata: Metadata = {
     "Submit your online adoption application to welcome a rescued dog, puppy, cat, or kitten from Haven Paws into your forever home.",
 };
 
-interface ApplyPageProps {
-  searchParams: Promise<{ pet?: string }>;
-}
-
-export default async function ApplyPage({ searchParams }: ApplyPageProps) {
-  const { pet: petParam } = await searchParams;
+export default async function ApplyPage() {
   const pets = await getPets();
 
   return (
@@ -68,7 +63,7 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
           {/* Interactive Form Component */}
           <div className="apply-form-container">
             <Suspense fallback={<p style={{ color: "var(--text-muted)" }}>Loading application form...</p>}>
-              <AdoptionApplicationForm pets={pets} initialPetSlug={petParam || ""} />
+              <AdoptionApplicationForm pets={pets} />
             </Suspense>
           </div>
         </div>
