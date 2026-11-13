@@ -6,6 +6,11 @@ import { Database } from "./supabase/types";
 type PetRow = Database["public"]["Tables"]["pets"]["Row"];
 type StoryRow = Database["public"]["Tables"]["adoption_records"]["Row"];
 
+export interface AdminPetItem extends PetProfile {
+  status: Database["public"]["Tables"]["pets"]["Row"]["status"];
+  createdAt?: string;
+}
+
 export function mapDbPetToProfile(row: PetRow): PetProfile {
   return {
     id: row.slug,
@@ -76,6 +81,36 @@ export async function getPets(): Promise<PetProfile[]> {
   } catch (err) {
     console.warn("Notice: Falling back to SAMPLE_PETS due to DB error:", err);
     return SAMPLE_PETS;
+  }
+}
+
+/**
+ * Fetches all pets for the Admin management console (including drafts and archived).
+ */
+export async function getAllPetsForAdmin(): Promise<AdminPetItem[]> {
+  try {
+    const supabase = getSupabaseServerClient();
+    if (!supabase) {
+      return SAMPLE_PETS.map((p) => ({ ...p, status: "available" as const }));
+    }
+
+    const { data, error } = await supabase
+      .from("pets")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return SAMPLE_PETS.map((p) => ({ ...p, status: "available" as const }));
+    }
+
+    return data.map((row) => ({
+      ...mapDbPetToProfile(row),
+      status: row.status,
+      createdAt: row.created_at,
+    }));
+  } catch (err) {
+    console.warn("Notice: Admin pets falling back to SAMPLE_PETS:", err);
+    return SAMPLE_PETS.map((p) => ({ ...p, status: "available" as const }));
   }
 }
 
