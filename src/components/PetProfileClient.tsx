@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { PetProfile } from "@/data/pets";
 import { buildWhatsAppUrl, SITE_CONFIG } from "@/config/site";
 
@@ -370,6 +371,13 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
               >
                 <span>💬</span> Inquire on WhatsApp to Adopt {pet.name} ({pet.adoptionCode})
               </a>
+              <Link
+                href={`/apply?pet=${pet.id}`}
+                className="btn-apply-profile"
+                aria-label={`Apply to adopt ${pet.name} online`}
+              >
+                <span>📝</span> Apply to Adopt Online (3-Min Form)
+              </Link>
               <button
                 type="button"
                 onClick={handleShare}
