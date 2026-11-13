@@ -1,4 +1,5 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "./types";
 
 let supabaseBrowserClient: SupabaseClient<Database> | null = null;
@@ -20,7 +21,7 @@ export function getSupabaseBrowserClient(): SupabaseClient<Database> | null {
   }
 
   try {
-    supabaseBrowserClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
+    supabaseBrowserClient = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
     return supabaseBrowserClient;
   } catch (error) {
     console.warn("Failed to initialize Supabase browser client:", error);
