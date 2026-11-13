@@ -105,7 +105,11 @@ img {
   align-items: center;
   justify-content: space-between;
   min-height: 70px;
-  padding: 8px 0;
+  padding: 8px 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 .logo-block {
   display: flex;
@@ -2788,9 +2792,13 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
+  padding: 14px 24px;
   gap: 16px;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .admin-header-brand {
@@ -2895,7 +2903,11 @@ footer {
 
 .admin-main {
   flex: 1;
-  padding: 32px 0 64px;
+  padding: 32px 24px 64px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .admin-welcome-bar {
@@ -4487,6 +4499,9 @@ footer {
     display: block;
   }
   /* Admin Responsive (Tablet / Mid Screens) */
+  .admin-main {
+    padding: 28px 22px 64px;
+  }
   .admin-kpi-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
@@ -4516,7 +4531,8 @@ footer {
   }
   .nav-inner {
     min-height: 58px;
-    padding: 6px 0;
+    padding: 6px 18px;
+    box-sizing: border-box;
   }
   .logo-block {
     gap: 8px;
@@ -4703,10 +4719,25 @@ footer {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
+    padding: 14px 20px;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     overflow: hidden;
+    box-sizing: border-box;
+  }
+  .admin-main {
+    padding: 24px 20px 60px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .admin-welcome-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .admin-header-brand {
     justify-content: space-between;
@@ -4752,7 +4783,13 @@ footer {
   }
   .admin-kpi-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 14px;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+  }
+  .admin-kpi-card {
+    padding: 20px 18px;
+    box-sizing: border-box;
   }
   .admin-welcome-title {
     font-size: 1.65rem;
@@ -4760,11 +4797,16 @@ footer {
   .admin-quick-actions {
     flex-direction: column;
     width: 100%;
+    gap: 12px;
+    box-sizing: border-box;
   }
   .btn-admin-action {
     width: 100%;
-    min-height: 44px;
+    min-height: 48px;
+    padding: 12px 20px;
     justify-content: center;
+    box-sizing: border-box;
+    font-size: 0.95rem;
   }
   .admin-card {
     padding: 20px 18px;
@@ -4922,6 +4964,12 @@ footer {
 }
 
 @media (max-width: 480px) {
+  .admin-header-inner {
+    padding: 12px 18px;
+  }
+  .admin-main {
+    padding: 20px 18px 56px;
+  }
   .admin-modal-card {
     padding: 18px 14px;
     max-height: 92vh;
