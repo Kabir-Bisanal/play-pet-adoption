@@ -1,6 +1,6 @@
 "use server";
 
-import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase/server";
 
 export interface AdoptionFormValues {
   petSlug: string;
@@ -153,18 +153,25 @@ export async function submitAdoptionApplication(
       if (dbError) {
         console.warn("Notice: Supabase insert error, falling back gracefully:", dbError.message);
       } else {
-        // Also log to activity_logs
-        await supabase.from("activity_logs").insert({
-          admin_email: "system@havenpaws.org",
-          action: "application_submitted",
-          details: {
-            reference_code: referenceCode,
-            pet_name: petName,
-            pet_code: petCode,
-            applicant_name: applicantName,
-            applicant_email: applicantEmail,
-          },
-        });
+        // Log to activity_logs via admin client if service role key is configured
+        try {
+          const adminSupabase = getSupabaseAdminClient();
+          if (adminSupabase) {
+            await adminSupabase.from("activity_logs").insert({
+              admin_email: "system@havenpaws.org",
+              action: "application_submitted",
+              details: {
+                reference_code: referenceCode,
+                pet_name: petName,
+                pet_code: petCode,
+                applicant_name: applicantName,
+                applicant_email: applicantEmail,
+              },
+            });
+          }
+        } catch {
+          // Non-critical background log
+        }
       }
     }
 
