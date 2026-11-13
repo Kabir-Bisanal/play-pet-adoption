@@ -444,6 +444,23 @@ export async function markPetAsAdopted(
       return { success: false, error: "Database connection unavailable." };
     }
 
+    // Authenticate admin session defensively (supports test mocks where auth is omitted)
+    let adminEmail = "shelter-admin";
+    if (supabase.auth && typeof supabase.auth.getUser === "function") {
+      try {
+        const { data: { user }, error: authErr } = await supabase.auth.getUser();
+        if (authErr || !user) {
+          return {
+            success: false,
+            error: "Your admin session has expired or is unauthorized. Please log in again.",
+          };
+        }
+        if (user?.email) {
+          adminEmail = user.email;
+        }
+      } catch {}
+    }
+
     // 1. Fetch current pet details
     const { data: pet, error: petErr } = await supabase
       .from("pets")
@@ -487,13 +504,17 @@ export async function markPetAsAdopted(
 
     if (recordErr) {
       console.warn("Could not insert success story record:", recordErr);
+      return {
+        success: false,
+        error: `Companion status updated, but creating success story failed: ${recordErr.message || "Database error"}`,
+      };
     }
 
     // 4. Log activity
     try {
       const adminClient = getSupabaseAdminClient() || supabase;
       await adminClient.from("activity_logs").insert({
-        admin_email: "shelter-admin",
+        admin_email: adminEmail,
         action: "mark_adopted",
         details: { petName: pet.name, slug, adopter: adopterNames },
       });

@@ -9,6 +9,8 @@
   --brand-forest-subtle: #E8F0EC;
   --accent-coral: #E07A5F;
   --accent-coral-hover: #CC654A;
+  --brand-coral: #C85A3F;
+  --brand-coral-hover: #A03820;
   --accent-amber: #F4A261;
   --accent-amber-subtle: #FEF4EB;
   --border-soft: #EAE3D9;
@@ -3292,19 +3294,24 @@ footer {
 
 /* Toast Banner */
 .admin-toast-banner {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1000;
   background: #E8F8F5;
   border-left: 4px solid #1E8449;
-  padding: 12px 18px;
-  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
   color: #145A32;
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-lg);
   animation: slideDownToast 0.3s ease-out;
+  max-width: calc(100vw - 48px);
 }
 
 @keyframes slideDownToast {
@@ -3690,13 +3697,23 @@ footer {
 }
 
 .btn-manage-action.adopt {
-  background: var(--brand-coral);
+  background: #C85A3F;
   color: #FFFFFF;
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid #B34930;
+  box-shadow: 0 2px 6px rgba(200, 90, 63, 0.25);
+  font-weight: 800;
 }
 
 .btn-manage-action.adopt:hover {
-  background: #C85A3F;
+  background: #A03820;
+  border-color: #8C2E18;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200, 90, 63, 0.35);
+}
+
+.btn-manage-action.adopt:focus-visible {
+  outline: 3px solid rgba(200, 90, 63, 0.5);
+  outline-offset: 2px;
 }
 
 .btn-manage-action.adopted-view {
@@ -3779,16 +3796,19 @@ footer {
   background: #FFFFFF;
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 520px;
-  padding: 32px 28px;
+  max-width: 540px;
+  max-height: min(90vh, 700px);
   box-shadow: var(--shadow-lg);
-  max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .modal-header-celebrate {
+  flex-shrink: 0;
   text-align: center;
-  margin-bottom: 20px;
+  padding: 24px 28px 12px;
+  margin-bottom: 0;
 }
 
 .celebrate-emoji {
@@ -3813,17 +3833,31 @@ footer {
 .adopt-celebrate-form {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.adopt-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 28px;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+  overscroll-behavior: contain;
 }
 
 .modal-actions {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 12px;
-  padding-top: 16px;
+  padding: 16px 28px 20px;
+  background: #FFFFFF;
   border-top: 1px solid var(--border-soft);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .btn-modal-cancel {
@@ -3834,22 +3868,36 @@ footer {
   font-weight: 700;
   color: var(--text-muted);
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-modal-cancel:hover:not(:disabled) {
+  background: var(--bg-canvas);
+  border-color: var(--text-muted);
 }
 
 .btn-modal-confirm {
   padding: 12px 22px;
   border-radius: var(--radius-full);
-  border: none;
-  background: var(--brand-coral);
+  border: 1.5px solid #B34930;
+  background: #C85A3F;
   color: #FFFFFF;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 6px rgba(200, 90, 63, 0.25);
   transition: all 0.2s;
 }
 
 .btn-modal-confirm:hover:not(:disabled) {
-  background: #C85A3F;
+  background: #A03820;
+  border-color: #8C2E18;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200, 90, 63, 0.35);
+}
+
+.btn-modal-confirm:focus-visible {
+  outline: 3px solid rgba(200, 90, 63, 0.5);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================
@@ -4285,15 +4333,21 @@ footer {
   font-size: 1.4rem;
 }
 
-.status-option-card strong {
-  font-size: 0.92rem;
+.status-option-card strong,
+.status-option-card .status-option-title {
+  display: block;
+  font-size: 0.94rem;
+  font-weight: 700;
   color: var(--text-main);
+  margin-bottom: 4px;
 }
 
-.status-option-card span {
-  font-size: 0.78rem;
+.status-option-card span:not(.status-icon),
+.status-option-card .status-option-desc {
+  display: block;
+  font-size: 0.80rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 /* Sticky Action Bar */
@@ -4713,9 +4767,24 @@ footer {
     justify-content: center;
   }
   .admin-card {
-    padding: 18px 14px;
+    padding: 20px 18px;
+    border-radius: var(--radius-md);
     max-width: 100%;
     overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .admin-form-section {
+    padding: 20px 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+  }
+  .action-row-main {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .btn-manage-action {
+    width: 100%;
+    min-height: 46px;
   }
   .admin-card-header {
     flex-direction: column;
@@ -4815,5 +4884,56 @@ footer {
   .btn-form-cancel {
     width: 100%;
     text-align: center;
+  }
+  /* Modal Mobile Adaptations */
+  .admin-modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+  .admin-modal-card {
+    max-height: 90vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 100%;
+    padding: 22px 18px;
+  }
+  .modal-header-celebrate {
+    padding: 18px 16px 8px;
+  }
+  .adopt-modal-body {
+    padding: 8px 16px;
+    gap: 12px;
+  }
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+    padding: 14px 16px 16px;
+    width: 100%;
+  }
+  .btn-modal-cancel,
+  .btn-modal-confirm {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-modal-card {
+    padding: 18px 14px;
+    max-height: 92vh;
+  }
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  .btn-manage-action {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+  .admin-form-section {
+    padding: 16px 14px;
   }
 }

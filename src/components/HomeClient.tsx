@@ -73,7 +73,11 @@ export default function HomeClient({ initialPets, initialStories }: HomeClientPr
               <img
                 src="/images/7.jpeg"
                 alt="The Rajanukunte Litter - 5 rescued puppies together"
+                loading="eager"
+                decoding="async"
                 fetchPriority="high"
+                width={600}
+                height={450}
               />
               <div className="hero-floating-tag">
                 <div>
@@ -140,11 +144,12 @@ export default function HomeClient({ initialPets, initialStories }: HomeClientPr
           </div>
 
           <div className="pet-grid" id="petGrid">
-            {visiblePets.map((pet) => (
+            {visiblePets.map((pet, idx) => (
               <PetCard
                 key={pet.id}
                 pet={pet}
                 onViewProfile={(chosen) => setSelectedPet(chosen)}
+                priority={idx < 2}
               />
             ))}
           </div>

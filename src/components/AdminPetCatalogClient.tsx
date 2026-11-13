@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AdminPetItem } from "@/lib/pets";
 import { PetStatus } from "@/lib/supabase/types";
 import { updatePetStatus, deletePet, markPetAsAdopted, PetActionResult } from "@/app/actions/pet-management";
@@ -13,6 +14,7 @@ interface AdminPetCatalogClientProps {
 type FilterTab = "all" | "available" | "pending" | "adopted" | "draft" | "archived";
 
 export default function AdminPetCatalogClient({ initialPets }: AdminPetCatalogClientProps) {
+  const router = useRouter();
   const [pets, setPets] = useState<AdminPetItem[]>(initialPets);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
@@ -147,21 +149,39 @@ export default function AdminPetCatalogClient({ initialPets }: AdminPetCatalogCl
     formData.set("adoptedDate", adoptionModalState.adoptedDate);
     formData.set("afterQuote", adoptionModalState.afterQuote);
 
-    const result = await markPetAsAdopted(null, formData);
+    startTransition(async () => {
+      try {
+        const result = await markPetAsAdopted(null, formData);
 
-    if (result.success) {
-      setPets((prev) =>
-        prev.map((p) => (p.id === adoptingPet.id ? { ...p, status: "adopted" } : p))
-      );
-      showToast(result.message || `${adoptingPet.name} is now marked as Adopted! 🎉`);
-      setAdoptingPet(null);
-    } else {
-      setAdoptionModalState((prev) => ({
-        ...prev,
-        isSubmitting: false,
-        error: result.error || "Could not complete adoption record.",
-      }));
-    }
+        if (result.success) {
+          setPets((prev) =>
+            prev.map((p) =>
+              p.id === adoptingPet.id
+                ? { ...p, status: "adopted", badgeLabel: "Adopted!" }
+                : p
+            )
+          );
+          showToast(
+            result.message ||
+              `🎉 Happy Forever Home Day! ${adoptingPet.name} is now marked as Adopted!`
+          );
+          setAdoptingPet(null);
+          router.refresh();
+        } else {
+          setAdoptionModalState((prev) => ({
+            ...prev,
+            isSubmitting: false,
+            error: result.error || "Could not complete adoption record.",
+          }));
+        }
+      } catch (err: any) {
+        setAdoptionModalState((prev) => ({
+          ...prev,
+          isSubmitting: false,
+          error: err?.message || "An unexpected error occurred while saving.",
+        }));
+      }
+    });
   };
 
   return (
@@ -282,7 +302,15 @@ export default function AdminPetCatalogClient({ initialPets }: AdminPetCatalogCl
             <div key={pet.id} className="admin-pet-manage-card">
               {/* Pet Card Image & Badge */}
               <div className="manage-card-media">
-                <img src={pet.image} alt={pet.name} className="manage-card-img" />
+                <img
+                  src={pet.image}
+                  alt={pet.name}
+                  className="manage-card-img"
+                  loading="lazy"
+                  decoding="async"
+                  width={380}
+                  height={240}
+                />
                 <span
                   className={`manage-card-status status-${pet.status}`}
                 >
@@ -344,6 +372,7 @@ export default function AdminPetCatalogClient({ initialPets }: AdminPetCatalogCl
                       className="btn-manage-action adopt"
                       onClick={() => openAdoptModal(pet)}
                       title="Celebrate adoption and publish success story"
+                      aria-label={`Mark ${pet.name} as adopted`}
                     >
                       ✨ Mark Adopted
                     </button>
@@ -427,76 +456,78 @@ export default function AdminPetCatalogClient({ initialPets }: AdminPetCatalogCl
             )}
 
             <form onSubmit={handleAdoptSubmit} className="adopt-celebrate-form">
-              <div className="form-group">
-                <label className="form-label" htmlFor="adopterNames">
-                  Adopter Name(s) <span className="req-star">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="adopterNames"
-                  className="form-input"
-                  placeholder="e.g. Ananya &amp; Rohit Sharma"
-                  value={adoptionModalState.adopterNames}
-                  onChange={(e) =>
-                    setAdoptionModalState((prev) => ({ ...prev, adopterNames: e.target.value }))
-                  }
-                  required
-                />
-              </div>
-
-              <div className="form-row-2">
+              <div className="adopt-modal-body">
                 <div className="form-group">
-                  <label className="form-label" htmlFor="neighborhood">
-                    Bangalore Neighborhood <span className="req-star">*</span>
+                  <label className="form-label" htmlFor="adopterNames">
+                    Adopter Name(s) <span className="req-star">*</span>
                   </label>
                   <input
                     type="text"
-                    id="neighborhood"
+                    id="adopterNames"
                     className="form-input"
-                    placeholder="e.g. Indiranagar, Bangalore"
-                    value={adoptionModalState.neighborhood}
+                    placeholder="e.g. Ananya &amp; Rohit Sharma"
+                    value={adoptionModalState.adopterNames}
                     onChange={(e) =>
-                      setAdoptionModalState((prev) => ({ ...prev, neighborhood: e.target.value }))
+                      setAdoptionModalState((prev) => ({ ...prev, adopterNames: e.target.value }))
                     }
                     required
                   />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="adoptedDate">
-                    Adoption Date
-                  </label>
-                  <input
-                    type="text"
-                    id="adoptedDate"
-                    className="form-input"
-                    placeholder="e.g. November 2026"
-                    value={adoptionModalState.adoptedDate}
-                    onChange={(e) =>
-                      setAdoptionModalState((prev) => ({ ...prev, adoptedDate: e.target.value }))
-                    }
-                  />
-                </div>
-              </div>
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="neighborhood">
+                      Bangalore Neighborhood <span className="req-star">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="neighborhood"
+                      className="form-input"
+                      placeholder="e.g. Indiranagar, Bangalore"
+                      value={adoptionModalState.neighborhood}
+                      onChange={(e) =>
+                        setAdoptionModalState((prev) => ({ ...prev, neighborhood: e.target.value }))
+                      }
+                      required
+                    />
+                  </div>
 
-              <div className="form-group">
-                <label className="form-label" htmlFor="afterQuote">
-                  Happy Adopter Quote / Story <span className="req-star">*</span>
-                </label>
-                <textarea
-                  id="afterQuote"
-                  rows={3}
-                  className="form-textarea"
-                  placeholder="e.g. Within two days he claimed the sunny rug next to my desk! Watching him play is the best part of our day."
-                  value={adoptionModalState.afterQuote}
-                  onChange={(e) =>
-                    setAdoptionModalState((prev) => ({ ...prev, afterQuote: e.target.value }))
-                  }
-                  required
-                />
-                <span className="form-field-hint">
-                  This quote will be published on your public Success Stories page.
-                </span>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="adoptedDate">
+                      Adoption Date
+                    </label>
+                    <input
+                      type="text"
+                      id="adoptedDate"
+                      className="form-input"
+                      placeholder="e.g. November 2026"
+                      value={adoptionModalState.adoptedDate}
+                      onChange={(e) =>
+                        setAdoptionModalState((prev) => ({ ...prev, adoptedDate: e.target.value }))
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="afterQuote">
+                    Happy Adopter Quote / Story <span className="req-star">*</span>
+                  </label>
+                  <textarea
+                    id="afterQuote"
+                    rows={3}
+                    className="form-textarea"
+                    placeholder="e.g. Within two days he claimed the sunny rug next to my desk! Watching him play is the best part of our day."
+                    value={adoptionModalState.afterQuote}
+                    onChange={(e) =>
+                      setAdoptionModalState((prev) => ({ ...prev, afterQuote: e.target.value }))
+                    }
+                    required
+                  />
+                  <span className="form-field-hint">
+                    This quote will be published on your public Success Stories page.
+                  </span>
+                </div>
               </div>
 
               <div className="modal-actions">

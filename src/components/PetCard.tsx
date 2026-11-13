@@ -7,9 +7,10 @@ import { buildWhatsAppUrl } from "@/config/site";
 interface PetCardProps {
   pet: PetProfile;
   onViewProfile?: (pet: PetProfile) => void;
+  priority?: boolean;
 }
 
-export default function PetCard({ pet, onViewProfile }: PetCardProps) {
+export default function PetCard({ pet, onViewProfile, priority = false }: PetCardProps) {
   const speciesClass =
     pet.species === "cat"
       ? "badge-species cat"
@@ -30,7 +31,15 @@ export default function PetCard({ pet, onViewProfile }: PetCardProps) {
         <span className={speciesClass}>
           {pet.badgeLabel}
         </span>
-        <img src={pet.image} alt={pet.alt} loading="lazy" decoding="async" />
+        <img
+          src={pet.image}
+          alt={pet.alt}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={priority ? "high" : "auto"}
+          width={400}
+          height={320}
+        />
       </div>
       <div className="pet-card-body">
         <div className="pet-header">

@@ -127,6 +127,11 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
                   galleryImages.length
                 }`}
                 className="profile-hero-img"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                width={800}
+                height={550}
               />
 
               {/* Cycle Controls */}
@@ -178,6 +183,9 @@ export default function PetProfileClient({ pet }: PetProfileClientProps) {
                         alt={`${pet.name} preview ${idx + 1}`}
                         className="profile-thumb-img"
                         loading="lazy"
+                        decoding="async"
+                        width={76}
+                        height={76}
                       />
                     </button>
                   );

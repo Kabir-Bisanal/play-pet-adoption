@@ -559,40 +559,46 @@ export default function AdminPetForm({ mode, initialData }: AdminPetFormProps) {
             </div>
           </div>
 
-          <div className="status-options-grid" role="radiogroup">
+          <div className="status-options-grid" role="radiogroup" aria-label="Listing Visibility">
             <button
               type="button"
+              role="radio"
+              aria-checked={status === "available"}
               className={`status-option-card ${status === "available" ? "selected" : ""}`}
               onClick={() => setStatus("available")}
             >
-              <span className="status-icon">🟢</span>
-              <div>
-                <strong>Ready for Adoption</strong>
-                <span>Visible immediately in the public catalog</span>
+              <span className="status-icon" aria-hidden="true">🟢</span>
+              <div className="status-option-text">
+                <strong className="status-option-title">Ready for Adoption</strong>
+                <span className="status-option-desc">Visible immediately in the public catalog</span>
               </div>
             </button>
 
             <button
               type="button"
+              role="radio"
+              aria-checked={status === "pending"}
               className={`status-option-card ${status === "pending" ? "selected" : ""}`}
               onClick={() => setStatus("pending")}
             >
-              <span className="status-icon">🟡</span>
-              <div>
-                <strong>Adoption in Progress</strong>
-                <span>Application is approved or undergoing meet-and-greet</span>
+              <span className="status-icon" aria-hidden="true">🟡</span>
+              <div className="status-option-text">
+                <strong className="status-option-title">Adoption in Progress</strong>
+                <span className="status-option-desc">Application is approved or undergoing meet-and-greet</span>
               </div>
             </button>
 
             <button
               type="button"
+              role="radio"
+              aria-checked={status === "draft"}
               className={`status-option-card ${status === "draft" ? "selected" : ""}`}
               onClick={() => setStatus("draft")}
             >
-              <span className="status-icon">⚪</span>
-              <div>
-                <strong>Save as Draft</strong>
-                <span>Hidden from public until staff completes intake</span>
+              <span className="status-icon" aria-hidden="true">⚪</span>
+              <div className="status-option-text">
+                <strong className="status-option-title">Save as Draft</strong>
+                <span className="status-option-desc">Hidden from public until staff completes intake</span>
               </div>
             </button>
           </div>
